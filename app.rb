@@ -1,9 +1,4 @@
-﻿require 'rubygems'
-require 'json'
-require 'net/https'
-require 'etc'
-require 'win32/process'
-require 'imgur'
+﻿require 'imgur'
 
 class App
     
@@ -11,7 +6,7 @@ class App
 
     @queue   = []
     @in_queue = []
-    @client = Imgur::Client.new(config_path: '~/.imgurrc.resposter')
+    @client = Imgur::Client.new(config_path: '~/.imgurrc.reposter')
 
     puts 'starting...'
     puts ''
@@ -22,7 +17,13 @@ class App
         begin
           @client.refresh_token
 
-          images = @client.images.all(resource: 'gallery', section: 'hot', sort: 'time', page: 823)
+          images = @client.images.all(
+              resource: 'gallery',
+              section: 'hot',
+              sort: 'time',
+              page: 822
+          )
+
           if images
             images.each do |image|
               if image
