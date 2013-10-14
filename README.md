@@ -16,13 +16,9 @@ NOTE: my implementation has a different file name... RESET THE CONSTANT in lib/i
 ---
 :client_id: YOUR_APP_CLIENT_ID
 :client_secret: YOUR_APP_CLIENT_SECRET
-:start_page: 1234
 ```
 
-Make sure to set `start_page` to your own value.  Mine is currently set around 850.  Whenever you restart the app, you'll want to decrement this value by one to keep from reposting things you've already reposted.
-
-
-For this to work, you will need to register an Imgur application (https://api.imgur.com/oauth2/addclient), and then authorize it using an Imgur account.  After doing so, you will record the access token and refresh token in the `.imgurrc` file, using the following lines:
+For this to work, you will need to register an Imgur application (https://api.imgur.com/oauth2/addclient), and then authorize it using an Imgur account.  After doing so, you will record the access token and refresh token in the `.imgurrc.reposter` file, using the following lines:
 
 ```
 :account_username: THE_IMGUR_USER_NAME
