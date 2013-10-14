@@ -5,12 +5,12 @@ Reposts (presumably old) images from Imgur back to user submitted
 
 NOTE: Although I could not find any rules about bots on imgur (either in the terms of service OR the API), I am willing to bet this could get a user banned, and is definitely a bit shady.
 
-Make sure to create a file in your $HOME directory named `.imgurrc`
+Make sure to create a file in your $HOME directory named `.imgurrc.reposter` (or change the setting to any other file path)
 You can rename this file, but you will need to change the constant in lib/imgur/base.rb
 
 NOTE: my implementation has a different file name... RESET THE CONSTANT in lib/imgur/base.rb
 
-`.imgurrc` File contents:
+`.imgurrc.reposter` File contents:
 
 ```
 ---
