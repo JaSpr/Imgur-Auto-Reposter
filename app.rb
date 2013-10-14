@@ -11,7 +11,7 @@ class App
 
     @queue   = []
     @in_queue = []
-    @client = Imgur::Client.new
+    @client = Imgur::Client.new(config_path: '~/.imgurrc.resposter')
 
     puts 'starting...'
     puts ''
@@ -20,7 +20,9 @@ class App
     Thread.new do
       while true do
         begin
-          images = @client.images.all(resource: 'gallery', section: 'hot', sort: 'time', page: 825)
+          @client.refresh_token
+
+          images = @client.images.all(resource: 'gallery', section: 'hot', sort: 'time', page: 823)
           if images
             images.each do |image|
               if image
@@ -53,6 +55,8 @@ class App
 
       while true do
         begin
+          @client.refresh_token
+
           if @queue.length > 0
 
             puts "#{@queue.length} items in queue"
