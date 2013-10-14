@@ -3,7 +3,7 @@ require 'json'
 require 'net/https'
 require 'etc'
 require 'win32/process'
-require_relative 'lib/imgur'
+require 'imgur'
 
 class App
     
@@ -11,24 +11,21 @@ class App
 
     @queue   = []
     @in_queue = []
+    @client = Imgur::Client.new
 
     puts 'starting...'
     puts ''
 
-    @imgur = Imgur.new
-
     # Thread for retrieving old images
     Thread.new do
-      puts "running thread 1...\r\n\r\n"
       while true do
         begin
-          images = @imgur.refresh_old_image_list
-
+          images = @client.images.all(resource: 'gallery', section: 'hot', sort: 'time', page: 825)
           if images
             images.each do |image|
               if image
-                @queue.push image unless @in_queue.include? image['id'] or image['is_album'].eql? true
-                @in_queue.push image['id']
+                @queue.push image unless @in_queue.include? image.id or image.is_album
+                @in_queue.push image.id
               end
             end
 
@@ -53,8 +50,6 @@ class App
     Thread.new do
 
       sleep 2
-      puts 'running thread 2...'
-      puts ''
 
       while true do
         begin
@@ -62,18 +57,36 @@ class App
 
             puts "#{@queue.length} items in queue"
 
-            post = @queue.shift
+            source = @queue.shift
 
-            image = @imgur.upload_image post
+            puts "uploading image... #{source.id}"
+            image = @client.images.upload(
+                {
+                    image: source.link,
+                    type: 'url',
+                    title: source.title,
+                    description: "http://imgur.com/gallery/#{source.id}"
+                }
+            )
 
-            puts "found image #{image['id']}"
+            puts "adding image #{image.id} to gallery"
 
-            response = @imgur.submit_to_gallery image['id'], post unless image['id'].nil? or image['id'].eql? '' or image['id'].eql? 0
+            image.add_to_gallery(
+                {
+                    title: source.title,
+                    description: "http://imgur.com/gallery/#{source.id}",
+                    terms: 1
+                }
+            )
 
-            puts response.to_s
-            puts ''
+            puts;
 
-            sleep rand(60...1800)
+            delay = rand(60...1800)
+
+            puts "sleeping for #{delay} seconds..."
+            puts;
+
+            sleep delay
           else
             puts 'waiting for items in queue... '
             sleep 10
